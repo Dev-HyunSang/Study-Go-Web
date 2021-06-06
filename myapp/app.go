@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "Hello World")
+}
+
 type User struct {
 	FirstName string    `json: "FirstName"` // 강의에서는 First_Name으로 되었지만 오류 있어서 변경 First_Name => FirstName
 	LastName  string    `json: "LastName"`
@@ -46,9 +50,7 @@ func barHandler(w http.ResponseWriter, r *http.Request) {
 func NewHttpHandler() http.Handler {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello World")
-	})
+	mux.HandleFunc("/", indexHandler)
 
 	mux.HandleFunc("/bar", barHandler)
 
