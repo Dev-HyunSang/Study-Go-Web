@@ -27,7 +27,8 @@ func TestBarPathHandler_WithoutName(t *testing.T) {
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/bar", nil)
 
-	barHandler(res, req)
+	mux := NewHttpHandler()
+	mux.ServeHTTP(res, req)
 
 	assert.Equal(http.StatusOK, res.Code)
 	data, _ := ioutil.ReadAll(res.Body)
