@@ -21,22 +21,19 @@ type User struct {
 type fooHandler struct{}
 
 func (f *fooHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// TODO: NewDecoder and JSON User struct
 	user := new(User)
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "Bad Request", err)
+		fmt.Fprint(w, "Bad Request: ", err)
 		return
 	}
 	user.CreatedAt = time.Now()
 
 	data, _ := json.Marshal(user)
-	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	fmt.Fprint(w, string(data))
-	fmt.Printf(string(data))
-
 }
 
 func barHandler(w http.ResponseWriter, r *http.Request) {

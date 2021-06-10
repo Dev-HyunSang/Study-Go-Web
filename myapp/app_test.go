@@ -1,10 +1,12 @@
 package myapp
 
 import (
+	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -50,14 +52,21 @@ func TestBarPathHandler_WithtName(t *testing.T) {
 	assert.Equal("Hello HyunSang!", string(data))
 }
 
-func TestFooHandler_WithoutJson(t *testing.T) {
+func TestFooHandler_WithJson(t *testing.T) {
 	assert := assert.New(t)
 
 	res := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/foo", nil)
+	req := httptest.NewRequest("POST", "/foo",
+		strings.NewReader(`{"FirstName":"HyunSang", "LastName":"Park" , "Email":"hyun.sang@parkhyunsang.com"}`))
 
 	mux := NewHttpHandler()
 	mux.ServeHTTP(res, req)
 
-	assert.Equal(http.StatusBadRequest, res.Code)
+	assert.Equal(http.StatusCreated, res.Code)
+
+	user := new(User)
+	err := json.NewDecoder(res.Body).Decode(user)
+	assert.Nil(err)
+	assert.Equal("HyunSang", user.FirstName)
+	assert.Equal("Park", user.LastName)
 }
